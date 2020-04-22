@@ -61,8 +61,9 @@ async def fetch(method, uri, params_prefix=None, loop=None, timeout=30, **params
     url = "https://%s/%s.json" % (CHALLONGE_API_URL, uri)
 
     timeout = aiohttp.ClientTimeout(total=timeout)
+    connector = aiohttp.TCPConnector(resolver=aiohttp.AsyncResolver())
 
-    async with aiohttp.ClientSession(loop=loop, timeout=timeout) as session:
+    async with aiohttp.ClientSession(loop=loop, timeout=timeout, connector=connector) as session:
         auth = aiohttp.BasicAuth(login=_credentials["user"], password=_credentials["api_key"])
         async with session.request(method, url, params=params, auth=auth) as response:
             try:
