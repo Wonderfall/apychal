@@ -66,10 +66,9 @@ async def fetch(method, uri, params_prefix=None, loop=None, timeout=30, **params
     async with aiohttp.ClientSession(loop=loop, timeout=timeout, connector=connector) as session:
         auth = aiohttp.BasicAuth(login=_credentials["user"], password=_credentials["api_key"])
         async with session.request(method, url, params=params, auth=auth) as response:
-            try:
-                return await response.json()
-            except aiohttp.client_exceptions.ContentTypeError:
+            if int(response.status) >= 400:
                 raise ChallongeException(f"{response.status} {response.reason}")
+            return await response.json()
 
 
 async def fetch_and_parse(method, uri, params_prefix=None, **params):
