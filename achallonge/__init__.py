@@ -5,7 +5,6 @@ from achallonge import (
     attachments)
 from achallonge.api import (
     set_credentials,
-    get_credentials,
     set_timezone,
     get_timezone,
     fetch,

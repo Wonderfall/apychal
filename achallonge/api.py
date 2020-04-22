@@ -3,13 +3,9 @@ import iso8601
 import tzlocal
 import pytz
 import itertools
-import sys
 import aiohttp
 import asyncio
-#import logging
 
-PY2 = sys.version_info[0] == 2
-TEXT_TYPE = unicode if PY2 else str
 tz = tzlocal.get_localzone()
 
 CHALLONGE_API_URL = "api.challonge.com/v1"
@@ -52,11 +48,6 @@ def set_timezone(new_tz=None):
         tz = tzlocal.get_localzone()
 
 
-def get_credentials():
-    """Retrieve the challonge.com credentials set with set_credentials()."""
-    return _credentials["user"], _credentials["api_key"]
-
-
 def get_timezone():
     """Return currently timezone in use."""
     return tz
@@ -66,20 +57,13 @@ async def fetch(method, uri, params_prefix=None, loop=None, timeout=30, **params
     """Fetch the given uri and return the contents of the response."""
     params = _prepare_params(params, params_prefix)
 
-    if method == "POST" or method == "PUT":
-        r_data = {"data": params}
-    else:
-        r_data = {"params": params}
-
     # build the HTTP request and use basic authentication
     url = "https://%s/%s.json" % (CHALLONGE_API_URL, uri)
-
 
     timeout = aiohttp.ClientTimeout(total=timeout)
 
     async with aiohttp.ClientSession(loop=loop, timeout=timeout) as session:
-        credentials = get_credentials()
-        auth = aiohttp.BasicAuth(login=credentials[0], password=credentials[1])
+        auth = aiohttp.BasicAuth(login=_credentials["user"], password=_credentials["api_key"])
         async with session.request(method, url, params=params, auth=auth) as response:
             try:
                 return await response.json()
@@ -115,7 +99,7 @@ def _parse(data):
                 "username",
                 "challonge_username"}:
             continue # do not test type of fields which are always strings
-        if isinstance(v, TEXT_TYPE):
+        if isinstance(v, str):
             try:
                 dt = iso8601.parse_date(v)
                 d[k] = dt.astimezone(tz)
