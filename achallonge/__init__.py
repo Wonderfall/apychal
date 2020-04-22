@@ -1,9 +1,9 @@
-from challonge import (
+from achallonge import (
     tournaments,
     matches,
     participants,
     attachments)
-from challonge.api import (
+from achallonge.api import (
     set_credentials,
     get_credentials,
     set_timezone,
