@@ -6,7 +6,7 @@ import itertools
 import sys
 import aiohttp
 import asyncio
-import logging
+#import logging
 
 PY2 = sys.version_info[0] == 2
 TEXT_TYPE = unicode if PY2 else str
