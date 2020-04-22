@@ -1,4 +1,4 @@
 iso8601
 tzlocal
 pytz
-aiohttp
+aiohttp==3.6.*

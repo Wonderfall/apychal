@@ -3,7 +3,7 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, "README.rst")) as f:
+with open(path.join(here, "README.md")) as f:
     long_description = f.read()
 
 requirements = []
@@ -17,7 +17,7 @@ setup(name = "apychal",
     author_email = "wonderfall@protonmail.com",
     url = "https://github.com/Wonderfall/pychal",
     license = "Public Domain",
-    version = "1.9.0",
+    version = "1.9.1",
     keywords = ['tournaments', 'challonge'],
     packages = find_packages(),
     platforms=['any'],
@@ -26,12 +26,10 @@ setup(name = "apychal",
         'Intended Audience :: Developers',
         'License :: Public Domain',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8'
     ],
     install_requires = requirements
 )
