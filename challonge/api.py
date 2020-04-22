@@ -61,7 +61,7 @@ def get_timezone():
     return tz
 
 
-async def fetch(method, uri, params_prefix=None, **params, loop=None, timeout=30):
+async def fetch(method, uri, params_prefix=None, loop=None, timeout=30, **params):
     """Fetch the given uri and return the contents of the response."""
     params = _prepare_params(params, params_prefix)
 
