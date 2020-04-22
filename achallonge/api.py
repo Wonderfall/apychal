@@ -6,6 +6,7 @@ import itertools
 import sys
 import aiohttp
 import asyncio
+import logging
 
 PY2 = sys.version_info[0] == 2
 TEXT_TYPE = unicode if PY2 else str
@@ -27,14 +28,6 @@ def set_credentials(username, api_key):
     """Set the challonge.com api credentials to use."""
     _credentials["user"] = username
     _credentials["api_key"] = api_key
-
-
-def assert_or_raise(cond, exc, *args):
-    if achallonge.USE_EXCEPTIONS is not None and not cond:
-        if achallonge.USE_EXCEPTIONS:
-            raise exc(*args)
-        else:
-            log.warning('An exception `{}` has been raised: `{}`'.format(exc.__name__, args))
 
 
 def set_timezone(new_tz=None):
@@ -89,14 +82,12 @@ async def fetch(method, uri, params_prefix=None, loop=None, timeout=30, **params
         auth = aiohttp.BasicAuth(login=credentials[0], password=credentials[1])
         async with session.request(method, url, params=params, auth=auth) as response:
             resp = await response.json()
-            assert_or_raise(response.status in [200, 401, 404, 406, 422, 500], ValueError, 'Unknown API return code', resp, response.status, response.reason, uri, params)
-            assert_or_raise(response.status not in [401, 404, 406, 422, 500], ChallongeException, resp, response.status, response.reason, uri, params)
             return resp
 
 async def fetch_and_parse(method, uri, params_prefix=None, **params):
     """Fetch the given uri and return python dictionary with parsed data-types."""
     response = await fetch(method, uri, params_prefix, **params)
-    return _parse(json.loads(response.text))
+    return _parse(response)
 
 
 def _parse(data):
