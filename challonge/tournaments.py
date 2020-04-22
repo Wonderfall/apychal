@@ -1,12 +1,13 @@
 from challonge import api
+import asyncio
 
 
-def index(**params):
+async def index(**params):
     """Retrieve a set of tournaments created with your account."""
-    return api.fetch_and_parse("GET", "tournaments", **params)
+    return await api.fetch_and_parse("GET", "tournaments", **params)
 
 
-def create(name, url, tournament_type="single elimination", **params):
+async def create(name, url, tournament_type="single elimination", **params):
     """Create a new tournament."""
     params.update({
         "name": name,
@@ -14,29 +15,29 @@ def create(name, url, tournament_type="single elimination", **params):
         "tournament_type": tournament_type,
     })
 
-    return api.fetch_and_parse("POST", "tournaments", "tournament", **params)
+    return await api.fetch_and_parse("POST", "tournaments", "tournament", **params)
 
 
-def show(tournament, **params):
+async def show(tournament, **params):
     """Retrieve a single tournament record created with your account."""
-    return api.fetch_and_parse("GET", "tournaments/%s" % tournament, **params)
+    return await api.fetch_and_parse("GET", "tournaments/%s" % tournament, **params)
 
 
-def update(tournament, **params):
+async def update(tournament, **params):
     """Update a tournament's attributes."""
-    api.fetch("PUT", "tournaments/%s" % tournament, "tournament", **params)
+    await api.fetch("PUT", "tournaments/%s" % tournament, "tournament", **params)
 
 
-def destroy(tournament):
+async def destroy(tournament):
     """Deletes a tournament along with all its associated records.
 
     There is no undo, so use with care!
 
     """
-    api.fetch("DELETE", "tournaments/%s" % tournament)
+    await api.fetch("DELETE", "tournaments/%s" % tournament)
 
 
-def process_check_ins(tournament, **params):
+async def process_check_ins(tournament, **params):
     """This should be invoked after a tournament's
     check-in window closes before the tournament is started.
 
@@ -45,13 +46,13 @@ def process_check_ins(tournament, **params):
     3) Transitions the tournament state from 'checking_in' to 'checked_in'
 
     """
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "POST",
         "tournaments/%s/process_check_ins" % tournament,
         **params)
 
 
-def abort_check_in(tournament, **params):
+async def abort_check_in(tournament, **params):
     """When your tournament is in a 'checking_in' or 'checked_in' state,
     there's no way to edit the tournament's start time (start_at)
     or check-in duration (check_in_duration).
@@ -61,43 +62,43 @@ def abort_check_in(tournament, **params):
     2) Transitions the tournament state from 'checking_in' or 'checked_in' to 'pending'
 
     """
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "POST",
         "tournaments/%s/abort_check_in" % tournament,
         **params)
 
 
-def start(tournament, **params):
+async def start(tournament, **params):
     """Start a tournament, opening up matches for score reporting.
 
     The tournament must have at least 2 participants.
 
     """
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "POST",
         "tournaments/%s/start" % tournament,
         **params)
 
 
-def finalize(tournament, **params):
+async def finalize(tournament, **params):
     """Finalize a tournament that has had all match scores submitted,
     rendering its results permanent.
 
     """
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "POST",
         "tournaments/%s/finalize" % tournament,
         **params)
 
 
-def reset(tournament, **params):
+async def reset(tournament, **params):
     """Reset a tournament, clearing all of its scores and attachments.
 
     You can then add/remove/edit participants before starting the
     tournament again.
 
     """
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "POST",
         "tournaments/%s/reset" % tournament,
         **params)

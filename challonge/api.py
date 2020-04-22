@@ -4,8 +4,8 @@ import tzlocal
 import pytz
 import itertools
 import sys
-from requests import request
-from requests.exceptions import HTTPError
+import aiohttp
+import asyncio
 
 PY2 = sys.version_info[0] == 2
 TEXT_TYPE = unicode if PY2 else str
@@ -61,7 +61,7 @@ def get_timezone():
     return tz
 
 
-def fetch(method, uri, params_prefix=None, **params):
+async def fetch(method, uri, params_prefix=None, **params, loop=None, timeout=30):
     """Fetch the given uri and return the contents of the response."""
     params = _prepare_params(params, params_prefix)
 
@@ -73,27 +73,21 @@ def fetch(method, uri, params_prefix=None, **params):
     # build the HTTP request and use basic authentication
     url = "https://%s/%s.json" % (CHALLONGE_API_URL, uri)
 
-    try:
-        response = request(
-            method,
-            url,
-            auth=get_credentials(),
-            **r_data)
-        response.raise_for_status()
-    except HTTPError:
-        if response.status_code != 422:
-            response.raise_for_status()
-        # wrap up application-level errors
-        doc = response.json()
-        if doc.get("errors"):
-            raise ChallongeException(*doc['errors'])
 
-    return response
+    timeout = aiohttp.ClientTimeout(total=timeout)
 
+    async with aiohttp.ClientSession(loop=loop, timeout=timeout) as session:
+        credentials = get_credentials()
+        auth = aiohttp.BasicAuth(login=credentials[0], password=credentials[1])
+        async with session.request(method, url, params=params, auth=auth) as response:
+            resp = await response.json()
+            assert_or_raise(response.status in [200, 401, 404, 406, 422, 500], ValueError, 'Unknown API return code', resp, response.status, response.reason, uri, params)
+            assert_or_raise(response.status not in [401, 404, 406, 422, 500], ChallongeException, resp, response.status, response.reason, uri, params)
+            return resp
 
-def fetch_and_parse(method, uri, params_prefix=None, **params):
+async def fetch_and_parse(method, uri, params_prefix=None, **params):
     """Fetch the given uri and return python dictionary with parsed data-types."""
-    response = fetch(method, uri, params_prefix, **params)
+    response = await fetch(method, uri, params_prefix, **params)
     return _parse(json.loads(response.text))
 
 

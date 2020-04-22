@@ -1,40 +1,41 @@
 from challonge import api
+import asyncio
 
 
-def index(tournament, match):
+async def index(tournament, match):
     """Retrieve a set of attachments created for a specific match."""
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "GET",
         "tournaments/%s/matches/%s/attachments" % (tournament, match))
 
 
-def create(tournament, match, **params):
+async def create(tournament, match, **params):
     """Create a new attachment for the specific match."""
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "POST",
         "tournaments/%s/matches/%s/attachments" % (tournament, match),
         "match_attachment",
         **params)
 
 
-def show(tournament, match, attachment):
+async def show(tournament, match, attachment):
     """Retrieve a single match attachment record."""
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "GET",
         "tournaments/%s/matches/%s/attachments/%s" % (tournament, match, attachment))
 
 
-def update(tournament, match, attachment, **params):
+async def update(tournament, match, attachment, **params):
     """Update the attributes of a match attachment."""
-    api.fetch(
+    await api.fetch(
         "PUT",
         "tournaments/%s/matches/%s/attachments/%s" % (tournament, match, attachment),
         "match_attachment",
         **params)
 
 
-def destroy(tournament, match, attachment):
+async def destroy(tournament, match, attachment):
     """Delete a match attachment."""
-    api.fetch(
+    await api.fetch(
         "DELETE",
         "tournaments/%s/matches/%s/attachments/%s" % (tournament, match, attachment))

@@ -1,25 +1,26 @@
 from challonge import api
+import asyncio
 
 
-def index(tournament):
+async def index(tournament):
     """Retrieve a tournament's participant list."""
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "GET",
         "tournaments/%s/participants" % tournament)
 
 
-def create(tournament, name, **params):
+async def create(tournament, name, **params):
     """Add a participant to a tournament."""
     params.update({"name": name})
 
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "POST",
         "tournaments/%s/participants" % tournament,
         "participant",
         **params)
 
 
-def bulk_add(tournament, names, **params):
+async def bulk_add(tournament, names, **params):
     """Bulk add participants to a tournament (up until it is started).
 
     :param tournament: the tournament's name or id
@@ -32,45 +33,45 @@ def bulk_add(tournament, names, **params):
     """
     params.update({"name": names})
 
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "POST",
         "tournaments/%s/participants/bulk_add" % tournament,
         "participants[]",
         **params)
 
 
-def show(tournament, participant_id, **params):
+async def show(tournament, participant_id, **params):
     """Retrieve a single participant record for a tournament."""
-    return api.fetch_and_parse(
+    return await api.fetch_and_parse(
         "GET",
         "tournaments/%s/participants/%s" % (tournament, participant_id),
         **params)
 
 
-def update(tournament, participant_id, **params):
+async def update(tournament, participant_id, **params):
     """Update the attributes of a tournament participant."""
-    api.fetch(
+    await api.fetch(
         "PUT",
         "tournaments/%s/participants/%s" % (tournament, participant_id),
         "participant",
         **params)
 
 
-def check_in(tournament, participant_id):
+async def check_in(tournament, participant_id):
     """Checks a participant in."""
-    api.fetch(
+    await api.fetch(
         "POST",
         "tournaments/%s/participants/%s/check_in" % (tournament, participant_id))
 
 
-def undo_check_in(tournament, participant_id):
+async def undo_check_in(tournament, participant_id):
     """Marks a participant as having not checked in."""
-    api.fetch(
+    await api.fetch(
         "POST",
         "tournaments/%s/participants/%s/undo_check_in" % (tournament, participant_id))
 
 
-def destroy(tournament, participant_id):
+async def destroy(tournament, participant_id):
     """Destroys or deactivates a participant.
 
     If tournament has not started, delete a participant, automatically
@@ -80,15 +81,15 @@ def destroy(tournament, participant_id):
     forfeiting his/her remaining matches.
 
     """
-    api.fetch(
+    await api.fetch(
         "DELETE",
         "tournaments/%s/participants/%s" % (tournament, participant_id))
 
 
-def randomize(tournament):
+async def randomize(tournament):
     """Randomize seeds among participants.
 
     Only applicable before a tournament has started.
 
     """
-    api.fetch("POST", "tournaments/%s/participants/randomize" % tournament)
+    await api.fetch("POST", "tournaments/%s/participants/randomize" % tournament)
