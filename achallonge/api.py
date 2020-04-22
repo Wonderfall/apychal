@@ -81,8 +81,11 @@ async def fetch(method, uri, params_prefix=None, loop=None, timeout=30, **params
         credentials = get_credentials()
         auth = aiohttp.BasicAuth(login=credentials[0], password=credentials[1])
         async with session.request(method, url, params=params, auth=auth) as response:
-            resp = await response.json()
-            return resp
+            try:
+                return await response.json()
+            except aiohttp.client_exceptions.ContentTypeError:
+                raise ChallongeException(f"{response.status} {response.reason}")
+
 
 async def fetch_and_parse(method, uri, params_prefix=None, **params):
     """Fetch the given uri and return python dictionary with parsed data-types."""
