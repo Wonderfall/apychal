@@ -29,6 +29,14 @@ def set_credentials(username, api_key):
     _credentials["api_key"] = api_key
 
 
+def assert_or_raise(cond, exc, *args):
+    if achallonge.USE_EXCEPTIONS is not None and not cond:
+        if achallonge.USE_EXCEPTIONS:
+            raise exc(*args)
+        else:
+            log.warning('An exception `{}` has been raised: `{}`'.format(exc.__name__, args))
+
+
 def set_timezone(new_tz=None):
     """Set the timezone for datetime fields.
     By default is your machine's time.
