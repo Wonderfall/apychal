@@ -11,7 +11,7 @@ with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
 setup(name = "apychal",
-    description = "Aysync version of pychallonge",
+    description = "Async version of pychal (drop-in replacement to pychallonge)",
     long_description = long_description,
     author = "Wonderfall",
     author_email = "wonderfall@protonmail.com",
