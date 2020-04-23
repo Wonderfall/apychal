@@ -9,6 +9,7 @@ import asyncio
 tz = tzlocal.get_localzone()
 
 CHALLONGE_API_URL = "api.challonge.com/v1"
+TIMEOUT = 30
 
 _credentials = {
     "user": None,
@@ -53,14 +54,14 @@ def get_timezone():
     return tz
 
 
-async def fetch(method, uri, params_prefix=None, loop=None, timeout=30, **params):
+async def fetch(method, uri, params_prefix=None, loop=None, **params):
     """Fetch the given uri and return the contents of the response."""
     params = _prepare_params(params, params_prefix)
 
     # build the HTTP request and use basic authentication
     url = f"https://{CHALLONGE_API_URL}/{uri}.json"
 
-    timeout = aiohttp.ClientTimeout(total=timeout)
+    timeout = aiohttp.ClientTimeout(total=TIMEOUT)
 
     async with aiohttp.ClientSession(loop=loop, timeout=timeout) as session:
         auth = aiohttp.BasicAuth(login=_credentials["user"], password=_credentials["api_key"])
