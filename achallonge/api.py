@@ -58,7 +58,7 @@ async def fetch(method, uri, params_prefix=None, loop=None, timeout=30, **params
     params = _prepare_params(params, params_prefix)
 
     # build the HTTP request and use basic authentication
-    url = "https://%s/%s.json" % (CHALLONGE_API_URL, uri)
+    url = f"https://{CHALLONGE_API_URL}/{uri}.json"
 
     timeout = aiohttp.ClientTimeout(total=timeout)
 
@@ -140,13 +140,13 @@ def _prepare_params(dirty_params, prefix=None):
             for val in v:
                 val = _prepare_value(val)
                 if prefix:
-                    params.append(("%s[%s][]" % (prefix, k), val))
+                    params.append((f"{prefix}[{k}][]", val))
                 else:
                     params.append((k + "[]", val))
         else:
             v = _prepare_value(v)
             if prefix:
-                params.append(("%s[%s]" % (prefix, k), v))
+                params.append((f"{prefix}[{k}]", v))
             else:
                 params.append((k, v))
 

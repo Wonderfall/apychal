@@ -20,12 +20,12 @@ async def create(name, url, tournament_type="single elimination", **params):
 
 async def show(tournament, **params):
     """Retrieve a single tournament record created with your account."""
-    return await api.fetch_and_parse("GET", "tournaments/%s" % tournament, **params)
+    return await api.fetch_and_parse("GET", f"tournaments/{tournament}", **params)
 
 
 async def update(tournament, **params):
     """Update a tournament's attributes."""
-    await api.fetch("PUT", "tournaments/%s" % tournament, "tournament", **params)
+    await api.fetch("PUT", f"tournaments/{tournament}", "tournament", **params)
 
 
 async def destroy(tournament):
@@ -34,7 +34,7 @@ async def destroy(tournament):
     There is no undo, so use with care!
 
     """
-    await api.fetch("DELETE", "tournaments/%s" % tournament)
+    await api.fetch("DELETE", f"tournaments/{tournament}")
 
 
 async def process_check_ins(tournament, **params):
@@ -48,7 +48,7 @@ async def process_check_ins(tournament, **params):
     """
     return await api.fetch_and_parse(
         "POST",
-        "tournaments/%s/process_check_ins" % tournament,
+        f"tournaments/{tournament}/process_check_ins",
         **params)
 
 
@@ -64,7 +64,7 @@ async def abort_check_in(tournament, **params):
     """
     return await api.fetch_and_parse(
         "POST",
-        "tournaments/%s/abort_check_in" % tournament,
+        f"tournaments/{tournament}/abort_check_in" ,
         **params)
 
 
@@ -76,7 +76,7 @@ async def start(tournament, **params):
     """
     return await api.fetch_and_parse(
         "POST",
-        "tournaments/%s/start" % tournament,
+        f"tournaments/{tournament}/start",
         **params)
 
 
@@ -87,7 +87,7 @@ async def finalize(tournament, **params):
     """
     return await api.fetch_and_parse(
         "POST",
-        "tournaments/%s/finalize" % tournament,
+        f"tournaments/{tournament}/finalize",
         **params)
 
 
@@ -100,5 +100,5 @@ async def reset(tournament, **params):
     """
     return await api.fetch_and_parse(
         "POST",
-        "tournaments/%s/reset" % tournament,
+        f"tournaments/{tournament}/reset",
         **params)

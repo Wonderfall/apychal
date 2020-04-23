@@ -6,7 +6,7 @@ async def index(tournament):
     """Retrieve a tournament's participant list."""
     return await api.fetch_and_parse(
         "GET",
-        "tournaments/%s/participants" % tournament)
+        f"tournaments/{tournament}/participants")
 
 
 async def create(tournament, name, **params):
@@ -15,7 +15,7 @@ async def create(tournament, name, **params):
 
     return await api.fetch_and_parse(
         "POST",
-        "tournaments/%s/participants" % tournament,
+        f"tournaments/{tournament}/participants",
         "participant",
         **params)
 
@@ -35,7 +35,7 @@ async def bulk_add(tournament, names, **params):
 
     return await api.fetch_and_parse(
         "POST",
-        "tournaments/%s/participants/bulk_add" % tournament,
+        f"tournaments/{tournament}/participants/bulk_add",
         "participants[]",
         **params)
 
@@ -44,7 +44,7 @@ async def show(tournament, participant_id, **params):
     """Retrieve a single participant record for a tournament."""
     return await api.fetch_and_parse(
         "GET",
-        "tournaments/%s/participants/%s" % (tournament, participant_id),
+        f"tournaments/{tournament}/participants/{participant_id}",
         **params)
 
 
@@ -52,7 +52,7 @@ async def update(tournament, participant_id, **params):
     """Update the attributes of a tournament participant."""
     await api.fetch(
         "PUT",
-        "tournaments/%s/participants/%s" % (tournament, participant_id),
+        f"tournaments/{tournament}/participants/{participant_id}",
         "participant",
         **params)
 
@@ -61,14 +61,14 @@ async def check_in(tournament, participant_id):
     """Checks a participant in."""
     await api.fetch(
         "POST",
-        "tournaments/%s/participants/%s/check_in" % (tournament, participant_id))
+        f"tournaments/{tournament}/participants/{participant_id}/check_in")
 
 
 async def undo_check_in(tournament, participant_id):
     """Marks a participant as having not checked in."""
     await api.fetch(
         "POST",
-        "tournaments/%s/participants/%s/undo_check_in" % (tournament, participant_id))
+        f"tournaments/{tournament}/participants/{participant_id}/undo_check_in")
 
 
 async def destroy(tournament, participant_id):
@@ -83,7 +83,7 @@ async def destroy(tournament, participant_id):
     """
     await api.fetch(
         "DELETE",
-        "tournaments/%s/participants/%s" % (tournament, participant_id))
+        f"tournaments/{tournament}/participants/{participant_id}")
 
 
 async def randomize(tournament):
@@ -92,4 +92,4 @@ async def randomize(tournament):
     Only applicable before a tournament has started.
 
     """
-    await api.fetch("POST", "tournaments/%s/participants/randomize" % tournament)
+    await api.fetch("POST", f"tournaments/{tournament}/participants/randomize")
