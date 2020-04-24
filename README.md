@@ -12,6 +12,11 @@ Please note that it :
 ## How to use
 That's it for the main differences, otherwise it should be the same to use as the original.
 
+You can install `apychal` with PyPI :
+```
+pip install apychal
+```
+
 ## Get started (example)
 ```python
 import asyncio
