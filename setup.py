@@ -13,6 +13,7 @@ with open('requirements.txt') as f:
 setup(name = "apychal",
     description = "Async version of pychal (drop-in replacement to pychallonge)",
     long_description = long_description,
+    long_description_content_type='text/markdown',
     author = "Wonderfall",
     author_email = "wonderfall@protonmail.com",
     url = "https://github.com/Wonderfall/apychal",
