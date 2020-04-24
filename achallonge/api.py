@@ -6,6 +6,15 @@ import itertools
 import aiohttp
 import asyncio
 
+# Use AsyncResolver if available (aiodns must be installed)
+try:
+    import aiodns
+except ImportError:
+    use_async_resolver = False
+else:
+    use_async_resolver = True
+
+
 tz = tzlocal.get_localzone()
 
 CHALLONGE_API_URL = "api.challonge.com/v1"
@@ -63,7 +72,10 @@ async def fetch(method, uri, params_prefix=None, loop=None, **params):
 
     timeout = aiohttp.ClientTimeout(total=TIMEOUT)
 
-    async with aiohttp.ClientSession(loop=loop, timeout=timeout) as session:
+    resolver = aiohttp.AsyncResolver() if use_async_resolver else aiohttp.DefaultResolver()
+    connector = aiohttp.TCPConnector(resolver=resolver)
+
+    async with aiohttp.ClientSession(loop=loop, timeout=timeout, connector=connector) as session:
         auth = aiohttp.BasicAuth(login=_credentials["user"], password=_credentials["api_key"])
         async with session.request(method, url, params=params, auth=auth) as response:
             if response.status >= 400:
