@@ -86,6 +86,15 @@ async def destroy(tournament, participant_id):
         f"tournaments/{tournament}/participants/{participant_id}")
 
 
+async def clear(tournament):
+    """Deletes all participants in a tournament.
+    (Only allowed if tournament hasn't started yet)
+    """"
+    await api.fetch(
+        "DELETE",
+        f"tournaments/{tournament}/participants/clear")
+
+
 async def randomize(tournament):
     """Randomize seeds among participants.
 
