@@ -1,12 +1,11 @@
 from achallonge import api
-import asyncio
 
 
-async def index(tournament, match):
+async def index(tournament, match, **params):
     """Retrieve a set of attachments created for a specific match."""
     return await api.fetch_and_parse(
-        "GET",
-        f"tournaments/{tournament}/matches/{match}/attachments")
+        "GET", f"tournaments/{tournament}/matches/{match}/attachments", **params
+    )
 
 
 async def create(tournament, match, **params):
@@ -15,14 +14,15 @@ async def create(tournament, match, **params):
         "POST",
         f"tournaments/{tournament}/matches/{match}/attachments",
         "match_attachment",
-        **params)
+        **params,
+    )
 
 
-async def show(tournament, match, attachment):
+async def show(tournament, match, attachment, **params):
     """Retrieve a single match attachment record."""
     return await api.fetch_and_parse(
-        "GET",
-        f"tournaments/{tournament}/matches/{match}/attachments/{attachment}")
+        "GET", f"tournaments/{tournament}/matches/{match}/attachments/{attachment}", **params
+    )
 
 
 async def update(tournament, match, attachment, **params):
@@ -31,11 +31,12 @@ async def update(tournament, match, attachment, **params):
         "PUT",
         f"tournaments/{tournament}/matches/{match}/attachments/{attachment}",
         "match_attachment",
-        **params)
+        **params,
+    )
 
 
-async def destroy(tournament, match, attachment):
+async def destroy(tournament, match, attachment, **params):
     """Delete a match attachment."""
     await api.fetch(
-        "DELETE",
-        f"tournaments/{tournament}/matches/{match}/attachments/{attachment}")
+        "DELETE", f"tournaments/{tournament}/matches/{match}/attachments/{attachment}", **params
+    )
