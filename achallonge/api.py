@@ -1,10 +1,8 @@
-import json
 import iso8601
 import tzlocal
 import pytz
 import itertools
 import aiohttp
-import asyncio
 
 # Use AsyncResolver if available (aiodns must be installed)
 try:
@@ -63,7 +61,7 @@ def get_timezone():
     return tz
 
 
-async def fetch(method, uri, params_prefix=None, loop=None, **params):
+async def fetch(method, uri, params_prefix=None, loop=None, credentials=None, **params):
     """Fetch the given uri and return the contents of the response."""
     params = _prepare_params(params, params_prefix)
 
@@ -74,9 +72,11 @@ async def fetch(method, uri, params_prefix=None, loop=None, **params):
 
     resolver = aiohttp.AsyncResolver() if use_async_resolver else aiohttp.DefaultResolver()
     connector = aiohttp.TCPConnector(resolver=resolver)
+    if credentials is None:
+        credentials = {"login": _credentials["user"], "password": _credentials["api_key"]}
 
     async with aiohttp.ClientSession(loop=loop, timeout=timeout, connector=connector) as session:
-        auth = aiohttp.BasicAuth(login=_credentials["user"], password=_credentials["api_key"])
+        auth = aiohttp.BasicAuth(**credentials)
         async with session.request(method, url, params=params, auth=auth) as response:
             if response.status >= 400:
                 raise ChallongeException(f"{response.status} {response.reason}")
@@ -105,12 +105,13 @@ def _parse(data):
     to_parse = dict(d)
     for k, v in to_parse.items():
         if k in {
-                "name",
-                "display_name",
-                "display_name_with_invitation_email_address",
-                "username",
-                "challonge_username"}:
-            continue # do not test type of fields which are always strings
+            "name",
+            "display_name",
+            "display_name_with_invitation_email_address",
+            "username",
+            "challonge_username",
+        }:
+            continue  # do not test type of fields which are always strings
         if isinstance(v, str):
             try:
                 dt = iso8601.parse_date(v)
@@ -134,7 +135,7 @@ def _prepare_params(dirty_params, prefix=None):
     objects.
 
     """
-    if prefix and prefix.endswith('[]'):
+    if prefix and prefix.endswith("[]"):
         keys = []
         values = []
         for k, v in dirty_params.items():

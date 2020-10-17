@@ -1,5 +1,4 @@
 from achallonge import api
-import asyncio
 
 
 async def index(**params):
@@ -9,11 +8,9 @@ async def index(**params):
 
 async def create(name, url, tournament_type="single elimination", **params):
     """Create a new tournament."""
-    params.update({
-        "name": name,
-        "url": url,
-        "tournament_type": tournament_type,
-    })
+    params.update(
+        {"name": name, "url": url, "tournament_type": tournament_type,}
+    )
 
     return await api.fetch_and_parse("POST", "tournaments", "tournament", **params)
 
@@ -28,13 +25,13 @@ async def update(tournament, **params):
     await api.fetch("PUT", f"tournaments/{tournament}", "tournament", **params)
 
 
-async def destroy(tournament):
+async def destroy(tournament, **params):
     """Deletes a tournament along with all its associated records.
 
     There is no undo, so use with care!
 
     """
-    await api.fetch("DELETE", f"tournaments/{tournament}")
+    await api.fetch("DELETE", f"tournaments/{tournament}", **params)
 
 
 async def process_check_ins(tournament, **params):
@@ -47,9 +44,8 @@ async def process_check_ins(tournament, **params):
 
     """
     return await api.fetch_and_parse(
-        "POST",
-        f"tournaments/{tournament}/process_check_ins",
-        **params)
+        "POST", f"tournaments/{tournament}/process_check_ins", **params
+    )
 
 
 async def abort_check_in(tournament, **params):
@@ -62,10 +58,7 @@ async def abort_check_in(tournament, **params):
     2) Transitions the tournament state from 'checking_in' or 'checked_in' to 'pending'
 
     """
-    return await api.fetch_and_parse(
-        "POST",
-        f"tournaments/{tournament}/abort_check_in" ,
-        **params)
+    return await api.fetch_and_parse("POST", f"tournaments/{tournament}/abort_check_in", **params)
 
 
 async def start(tournament, **params):
@@ -74,10 +67,7 @@ async def start(tournament, **params):
     The tournament must have at least 2 participants.
 
     """
-    return await api.fetch_and_parse(
-        "POST",
-        f"tournaments/{tournament}/start",
-        **params)
+    return await api.fetch_and_parse("POST", f"tournaments/{tournament}/start", **params)
 
 
 async def finalize(tournament, **params):
@@ -85,10 +75,7 @@ async def finalize(tournament, **params):
     rendering its results permanent.
 
     """
-    return await api.fetch_and_parse(
-        "POST",
-        f"tournaments/{tournament}/finalize",
-        **params)
+    return await api.fetch_and_parse("POST", f"tournaments/{tournament}/finalize", **params)
 
 
 async def reset(tournament, **params):
@@ -98,7 +85,4 @@ async def reset(tournament, **params):
     tournament again.
 
     """
-    return await api.fetch_and_parse(
-        "POST",
-        f"tournaments/{tournament}/reset",
-        **params)
+    return await api.fetch_and_parse("POST", f"tournaments/{tournament}/reset", **params)
